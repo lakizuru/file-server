@@ -4,26 +4,38 @@
 #include <arpa/inet.h>
 #define SIZE 1024
 
-void write_file(int sockfd){
+void write_file(int sockfd, int fileSize)
+{
   int n;
   FILE *fp;
   char *filename = "recv.txt";
-  char buffer[SIZE];
+  char buffer[fileSize];
+
+  // Reading byte array
+  read(sockfd, buffer, fileSize);
 
   fp = fopen(filename, "w");
-  while (1) {
+  fwrite(buffer, 1, sizeof(buffer), fp);
+  fclose(fp);
+
+  /*
+  while (1)
+  {
     n = recv(sockfd, buffer, SIZE, 0);
-    if (n <= 0){
+    if (n <= 0)
+    {
       break;
       return;
     }
     fprintf(fp, "%s", buffer);
     bzero(buffer, SIZE);
   }
+  */
   return;
 }
 
-int main(){
+int main()
+{
   char *ip = "127.0.0.1";
   int port = 6666;
   int e;
@@ -32,9 +44,11 @@ int main(){
   struct sockaddr_in server_addr, new_addr;
   socklen_t addr_size;
   char buffer[SIZE];
+  int fileSize;
 
   sockfd = socket(AF_INET, SOCK_STREAM, 0);
-  if(sockfd < 0) {
+  if (sockfd < 0)
+  {
     perror("[-]Error in socket");
     exit(1);
   }
@@ -44,23 +58,31 @@ int main(){
   server_addr.sin_port = port;
   server_addr.sin_addr.s_addr = inet_addr(ip);
 
-  e = bind(sockfd, (struct sockaddr*)&server_addr, sizeof(server_addr));
-  if(e < 0) {
+  e = bind(sockfd, (struct sockaddr *)&server_addr, sizeof(server_addr));
+  if (e < 0)
+  {
     perror("[-]Error in bind");
     exit(1);
   }
   printf("[+]Binding successfull.\n");
 
-  if(listen(sockfd, 10) == 0){
- printf("[+]Listening....\n");
- }else{
- perror("[-]Error in listening");
+  if (listen(sockfd, 10) == 0)
+  {
+    printf("[+]Listening....\n");
+  }
+  else
+  {
+    perror("[-]Error in listening");
     exit(1);
- }
+  }
 
   addr_size = sizeof(new_addr);
-  new_sock = accept(sockfd, (struct sockaddr*)&new_addr, &addr_size);
-  write_file(new_sock);
+  new_sock = accept(sockfd, (struct sockaddr *)&new_addr, &addr_size);
+
+  // Read file size
+  read(new_sock, &fileSize, sizeof(fileSize));
+
+  write_file(new_sock, fileSize);
   printf("[+]Data written in the file successfully.\n");
 
   return 0;
