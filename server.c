@@ -38,7 +38,7 @@ void write_file(int sockfd, int fileSize)
   return;
 }
 
-int main()
+int main(int argc, char **argv)
 {
   char *ip = "127.0.0.1";
   int port = 6666;
@@ -49,7 +49,7 @@ int main()
   socklen_t addr_size;
   //char buffer[SIZE];
   int fileSize;
-  //char *fileName;
+  char *fileName;
 
   sockfd = socket(AF_INET, SOCK_STREAM, 0);
   if (sockfd < 0)
@@ -92,7 +92,10 @@ int main()
 
   write_file(new_sock, fileSize);
 
-    rename("recv.txt", "recv.jpg");
+  //printf("Save as: ");
+  //scanf("%s", &fileName);
+
+    rename("recv.txt", argv[1]);
 
   printf("[+]Data written in the file successfully.\n");
 
