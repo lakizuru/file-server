@@ -12,29 +12,33 @@ void write_file(int sockfd, int fileSize)
   FILE *fp;
   char *filename = "recv.txt";
   char *rename = "recv.jpg";
+
   char buffer[fileSize];
+  bzero(buffer, fileSize);
+
+  fp = fopen(filename, "w");
 
   // Reading byte array
   read(sockfd, buffer, fileSize);
 
-  fp = fopen(filename, "w");
-  
   fwrite(buffer, 1, sizeof(buffer), fp);
-  fclose(fp);
-
-  /*
+  
+/*
   while (1)
   {
-    n = recv(sockfd, buffer, SIZE, 0);
+    // Reading byte array
+    read(sockfd, buffer, fileSize);
     if (n <= 0)
     {
       break;
-      return;
+      return -1;
     }
-    fprintf(fp, "%s", buffer);
-    bzero(buffer, SIZE);
-  }
-  */
+    fwrite(buffer, 1, sizeof(buffer), fp);
+    bzero(buffer, fileSize);
+  }*/
+
+  fclose(fp);
+
   return;
 }
 
@@ -91,13 +95,20 @@ int main(int argc, char **argv)
  //read(new_sock, &fileName, sizeof(fileName));
 
   write_file(new_sock, fileSize);
+  rename("recv.txt", argv[1]);
+  printf("[+]Data written in the file successfully.\n");
 
+/*
+  if (write_file(new_sock, fileSize) == -1){
+    remove("recv.txt");
+  }
+  else{
+    rename("recv.txt", argv[1]);
+    printf("[+]Data written in the file successfully.\n");
+  }
+*/
   //printf("Save as: ");
   //scanf("%s", &fileName);
-
-    rename("recv.txt", argv[1]);
-
-  printf("[+]Data written in the file successfully.\n");
 
   return 0;
 }
