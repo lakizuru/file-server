@@ -25,23 +25,6 @@ void write_file(int sockfd, int fileSize)
     fileSize -= 4096;
     bzero(buffer, sizeof(buffer));
   }
-  
-
-  
-  
-/*
-  while (1)
-  {
-    // Reading byte array
-    read(sockfd, buffer, fileSize);
-    if (n <= 0)
-    {
-      break;
-      return -1;
-    }
-    fwrite(buffer, 1, sizeof(buffer), fp);
-    bzero(buffer, fileSize);
-  }*/
 
   fclose(fp);
 
@@ -57,7 +40,6 @@ int main(int argc, char **argv)
   int sockfd, new_sock;
   struct sockaddr_in server_addr, new_addr;
   socklen_t addr_size;
-  //char buffer[SIZE];
   int fileSize;
   char *fileName;
 
@@ -103,18 +85,6 @@ int main(int argc, char **argv)
   write_file(new_sock, fileSize);
   rename("recv.txt", argv[1]);
   printf("[+]Data written in the file successfully.\n");
-
-/*
-  if (write_file(new_sock, fileSize) == -1){
-    remove("recv.txt");
-  }
-  else{
-    rename("recv.txt", argv[1]);
-    printf("[+]Data written in the file successfully.\n");
-  }
-*/
-  //printf("Save as: ");
-  //scanf("%s", &fileName);
 
   return 0;
 }
