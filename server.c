@@ -41,7 +41,9 @@ int main(int argc, char **argv)
   struct sockaddr_in server_addr, new_addr;
   socklen_t addr_size;
   int fileSize;
-  char *fileName;
+  char *fileName[4096];
+
+  bzero(fileName, sizeof(fileName));
 
   sockfd = socket(AF_INET, SOCK_STREAM, 0);
   if (sockfd < 0)
@@ -80,10 +82,11 @@ int main(int argc, char **argv)
   read(new_sock, &fileSize, sizeof(fileSize));
 
  // Read file Name
- //read(new_sock, &fileName, sizeof(fileName));
+ read(new_sock, &fileName, sizeof(fileName));
+ printf("[+]File created as \'%s\'\n", fileName);
 
   write_file(new_sock, fileSize);
-  rename("recv.txt", argv[1]);
+  rename("recv.txt", fileName);
   printf("[+]Data written in the file successfully.\n");
 
   return 0;
