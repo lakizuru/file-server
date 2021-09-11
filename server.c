@@ -2,19 +2,23 @@
 #include <stdlib.h>
 #include <string.h>
 #include <arpa/inet.h>
-#define SIZE 1024
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
 
 void write_file(int sockfd, int fileSize)
 {
   int n;
   FILE *fp;
   char *filename = "recv.txt";
+  char *rename = "recv.jpg";
   char buffer[fileSize];
 
   // Reading byte array
   read(sockfd, buffer, fileSize);
 
   fp = fopen(filename, "w");
+  
   fwrite(buffer, 1, sizeof(buffer), fp);
   fclose(fp);
 
@@ -43,8 +47,9 @@ int main()
   int sockfd, new_sock;
   struct sockaddr_in server_addr, new_addr;
   socklen_t addr_size;
-  char buffer[SIZE];
+  //char buffer[SIZE];
   int fileSize;
+  //char *fileName;
 
   sockfd = socket(AF_INET, SOCK_STREAM, 0);
   if (sockfd < 0)
@@ -82,7 +87,13 @@ int main()
   // Read file size
   read(new_sock, &fileSize, sizeof(fileSize));
 
+ // Read file Name
+ //read(new_sock, &fileName, sizeof(fileName));
+
   write_file(new_sock, fileSize);
+
+    rename("recv.txt", "recv.jpg");
+
   printf("[+]Data written in the file successfully.\n");
 
   return 0;
