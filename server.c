@@ -13,15 +13,21 @@ void write_file(int sockfd, int fileSize)
   char *filename = "recv.txt";
   char *rename = "recv.jpg";
 
-  char buffer[fileSize];
-  bzero(buffer, fileSize);
+  char buffer[4096];
+  bzero(buffer, sizeof(buffer));
 
   fp = fopen(filename, "w");
 
   // Reading byte array
-  read(sockfd, buffer, fileSize);
+  while(fileSize > 0){
+    read(sockfd, buffer, 4096);
+    fwrite(buffer, 1, sizeof(buffer), fp);
+    fileSize -= 4096;
+    bzero(buffer, sizeof(buffer));
+  }
+  
 
-  fwrite(buffer, 1, sizeof(buffer), fp);
+  
   
 /*
   while (1)
