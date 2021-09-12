@@ -41,9 +41,7 @@ int main(int argc, char **argv)
   struct sockaddr_in server_addr, new_addr;
   socklen_t addr_size;
   int fileSize;
-  char *fileName[4096];
-
-  bzero(fileName, sizeof(fileName));
+  int fileNameSize;
 
   sockfd = socket(AF_INET, SOCK_STREAM, 0);
   if (sockfd < 0)
@@ -65,6 +63,8 @@ int main(int argc, char **argv)
   }
   printf("[+]Binding successfull.\n");
 
+for(;;){
+
   if (listen(sockfd, 10) == 0)
   {
     printf("[+]Listening....\n");
@@ -76,10 +76,17 @@ int main(int argc, char **argv)
   }
 
   addr_size = sizeof(new_addr);
+
   new_sock = accept(sockfd, (struct sockaddr *)&new_addr, &addr_size);
 
   // Read file size
   read(new_sock, &fileSize, sizeof(fileSize));
+
+  // Read fileNameSize
+  read(new_sock, &fileNameSize, sizeof(fileNameSize));
+  printf("%d\n", fileNameSize);
+  char *fileName[fileNameSize]; 
+  bzero(fileName, sizeof(fileName));
 
  // Read file Name
  read(new_sock, &fileName, sizeof(fileName));
@@ -88,6 +95,7 @@ int main(int argc, char **argv)
   write_file(new_sock, fileSize);
   rename("recv.txt", fileName);
   printf("[+]Data written in the file successfully.\n");
+}
 
   return 0;
 }
