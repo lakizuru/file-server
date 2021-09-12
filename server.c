@@ -42,6 +42,7 @@ int main(int argc, char **argv)
   socklen_t addr_size;
   int fileSize;
   int fileNameSize;
+  int maxFileSize = 104857600; // = 100MB
 
   sockfd = socket(AF_INET, SOCK_STREAM, 0);
   if (sockfd < 0)
@@ -79,8 +80,19 @@ for(;;){
 
   new_sock = accept(sockfd, (struct sockaddr *)&new_addr, &addr_size);
 
+  // Sending maximum file Size
+  if (send(new_sock, &maxFileSize, sizeof(maxFileSize), 0) == -1)
+    {
+      perror("[-]Error in sending file size.");
+      exit(1);
+    }
+
   // Read file size
   read(new_sock, &fileSize, sizeof(fileSize));
+  if (fileSize == -1){
+    printf("[-]Maximum file size of %d exceeded.\n[-]File not tranferred.\n", maxFileSize);
+    break;
+  }
 
   // Read fileNameSize
   read(new_sock, &fileNameSize, sizeof(fileNameSize));
