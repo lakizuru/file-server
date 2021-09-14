@@ -108,16 +108,6 @@ for(;;){
       exit(1);
     }
 
-  // Read file size
-  read(new_sock, &fileSize, sizeof(fileSize));
-  if (fileSize == -1){
-    printf("[-]Maximum file size of %d exceeded.\n[-]File not tranferred.\n", maxFileSize);
-    fprintf(log, "[-]Maximum file size of %d exceeded from client %s\n", maxFileSize , cli_ip);
-    printf("[+]Client connection from %s successfully terminated\n", cli_ip);
-    fprintf(log, "[+]Client connection from %s successfully terminated\n", cli_ip);
-    break;
-  }
-
   // Read fileNameSize
   read(new_sock, &fileNameSize, sizeof(fileNameSize));
   char *fileName[fileNameSize]; 
@@ -128,7 +118,15 @@ for(;;){
  printf("[+]File created as \'%s\'\n", fileName);
  fprintf(log, "[+]File %s created for client %s\n", fileName, cli_ip);
 
-
+  // Read file size
+  read(new_sock, &fileSize, sizeof(fileSize));
+  if (fileSize == -1){
+    printf("[-]Maximum file size of %d exceeded.\n[-]File not tranferred.\n", maxFileSize);
+    fprintf(log, "[-]Maximum file size of %d exceeded from client %s\n", maxFileSize , cli_ip);
+    printf("[+]Client connection from %s successfully terminated\n", cli_ip);
+    fprintf(log, "[+]Client connection from %s successfully terminated\n", cli_ip);
+    break;
+  }
 
   write_file(new_sock, fileSize);
   rename("recv.txt", fileName);
