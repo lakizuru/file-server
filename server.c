@@ -6,6 +6,7 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <unistd.h>
+#include <time.h>
 
 void write_file(int sockfd, int fileSize)
 {
@@ -60,23 +61,26 @@ int main(int argc, char **argv)
   int maxFileSize = 104857600; // = 100MB
   const char *cli_ip;
   char cli_ip_dest[4096];
+  time_t systime;
+  
+  time(&systime);
 
   FILE *fp;
 
   // Setting up logging
   FILE *log;
   log = fopen("log.txt", "a");
-  fprintf(log, "[+]Server started!\n");
+  fprintf(log, "%s\t[+]Server started!\n", ctime(&systime));
 
   sockfd = socket(AF_INET, SOCK_STREAM, 0);
   if (sockfd < 0)
   {
     perror("[-]Error in socket");
-    fprintf(log, "[-]Error in socket\n");
+    fprintf(log, "%s\t[-]Error in socket\n"), ctime(&systime);
     exit(1);
   }
   printf("[+]Server socket created successfully.\n");
-  fprintf(log, "[+]Server socket created successfully.\n");
+  fprintf(log, "%s\t[+]Server socket created successfully.\n", ctime(&systime));
 
   server_addr.sin_family = AF_INET;
   server_addr.sin_port = port;
@@ -86,14 +90,15 @@ int main(int argc, char **argv)
   if (e < 0)
   {
     perror("[-]Error in bind");
-    fprintf(log, "[-]Error in bind\n");
+    fprintf(log, "%s\t[-]Error in bind\n", ctime(&systime));
     exit(1);
   }
   printf("[+]Binding successful.\n");
-  fprintf(log, "[+]Binding successful.\n[+]Server is in LISTENING state.\n");
+  fprintf(log, "%s\t[+]Binding successful.\n%s\t[+]Server is in LISTENING state.\n", ctime(&systime), ctime(&systime));
 
   for (;;)
   {
+    time(&systime);
 
     if (listen(sockfd, 10) == 0)
     {
@@ -117,13 +122,13 @@ int main(int argc, char **argv)
     }
 
     printf("[+]New client connection from %s\n", cli_ip);
-    fprintf(log, "[+]New client connection from %s\n", cli_ip);
+    fprintf(log, "%s\t[+]New client connection from %s\n", ctime(&systime), cli_ip);
 
     // Sending maximum file Size
     if (send(new_sock, &maxFileSize, sizeof(maxFileSize), 0) == -1)
     {
       perror("[-]Error in sending file size.");
-      fprintf(log, "[-]Error in sending file size for client %s\n", cli_ip);
+      fprintf(log, "%s\t[-]Error in sending file size for client %s\n", ctime(&systime), cli_ip);
       exit(1);
     }
 
@@ -134,8 +139,6 @@ int main(int argc, char **argv)
 
     // Read file Name
     read(new_sock, &fileName, sizeof(fileName));
-    //printf("[+]File created as \'%s\'\n", fileName);
-    //fprintf(log, "[+]File %s created for client %s\n", fileName, cli_ip);
 
     // Read action type
     read(new_sock, &action, sizeof(action));
@@ -148,18 +151,18 @@ int main(int argc, char **argv)
       if (fileSize == -1)
       {
         printf("[-]Maximum file size of %d exceeded.\n[-]File not tranferred.\n", maxFileSize);
-        fprintf(log, "[-]Maximum file size of %d exceeded from client %s\n", maxFileSize, cli_ip);
+        fprintf(log, "%s\t[-]Maximum file size of %d exceeded from client %s\n", ctime(&systime), maxFileSize, cli_ip);
         printf("[+]Client connection from %s successfully terminated\n", cli_ip);
-        fprintf(log, "[+]Client connection from %s successfully terminated\n", cli_ip);
+        fprintf(log, "%s\t[+]Client connection from %s successfully terminated\n", ctime(&systime), cli_ip);
         break;
       }
 
       write_file(new_sock, fileSize);
       rename("recv", fileName);
       printf("[+]Data written in the file successfully.\n");
-      fprintf(log, "[+]File %s saved successfully for client %s\n", fileName, cli_ip);
+      fprintf(log, "%s\t[+]File %s saved successfully for client %s\n", ctime(&systime), fileName, cli_ip);
       printf("[+]Client connection from %s successfully terminated\n", cli_ip);
-      fprintf(log, "[+]Client connection from %s successfully terminated\n", cli_ip);
+      fprintf(log, "%s\t[+]Client connection from %s successfully terminated\n", ctime(&systime), cli_ip);
       fclose(log);
     }
     else if (action == 0)
@@ -168,7 +171,7 @@ int main(int argc, char **argv)
     if (fp == NULL)
     {
       perror("[-]Error in reading file.");
-      fprintf(log, "[-]Error reading the file \'%s\' for client %s\n", fileName, cli_ip);
+      fprintf(log, "%s\t[-]Error reading the file \'%s\' for client %s\n", ctime(&systime), fileName, cli_ip);
       break;
     }
 
@@ -180,11 +183,11 @@ int main(int argc, char **argv)
     if (fileSize > maxFileSize)
     {
       printf("[-]Maximum file size of %d exceeded.\n[-]File not transferred.\n", maxFileSize);
-      fprintf(log, "[-]Maximum file size of %d exceeded from client %s\n", maxFileSize, cli_ip);
+      fprintf(log, "%s\t[-]Maximum file size of %d exceeded from client %s\n", ctime(&systime), maxFileSize, cli_ip);
       fileSize = -1;
       send(new_sock, &fileSize, sizeof(fileSize), 0);
       printf("[-]Closing the connection.\n");
-      fprintf(log, "[+]Client connection from %s successfully terminated\n", cli_ip);
+      fprintf(log, "%s\t[+]Client connection from %s successfully terminated\n", ctime(&systime), cli_ip);
       break;
     }
 
@@ -192,21 +195,22 @@ int main(int argc, char **argv)
     if (send(new_sock, &fileSize, sizeof(fileSize), 0) == -1)
     {
       perror("[-]Error in sending file size.");
-      fprintf(log, "[-]Error in sending file size for client %s\n", cli_ip);
+      fprintf(log, "%s\t[-]Error in sending file size for client %s\n", ctime(&systime), cli_ip);
       exit(1);
     }
 
     send_file(fp, new_sock, fileSize);
     printf("[+]File sent successfully.\n");
-    fprintf(log, "[+]File \'%s\' successfully sent t0 client %s\n", fileName, cli_ip);
+    fprintf(log, "%s\t[+]File \'%s\' successfully sent t0 client %s\n", ctime(&systime), fileName, cli_ip);
     }
     else
     {
       // error
       printf("[-]Invalid argument from client %s.\n", cli_ip);
-      fprintf(log, "[-]Invalid action requested by client %s\n", cli_ip);
+      fprintf(log, "%s\t[-]Invalid action requested by client %s\n", ctime(&systime), cli_ip);
     }
   }
-  fprintf(log, "[+]Stopping Server\n");
+  time(&systime);
+  fprintf(log, "%s\t[+]Stopping Server\n", ctime(&systime));
   return 0;
 }

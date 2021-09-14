@@ -1,30 +1,20 @@
-[+]Server started!
-[+]Server socket created successfully.
-[+]Binding successful.
-[+]Server is in LISTENING state.
-[+]New client connection from 127.0.0.1
-[+]File 2021-08-24 10-02-18.mkv created for client 127.0.0.1
-[-]Error reading the file '2021-08-24 10-02-18.mkv' for client 127.0.0.1
-[+]Server started!
-[+]Server socket created successfully.
-[+]Binding successful.
-[+]Server is in LISTENING state.
-[+]New client connection from 127.0.0.1
-[+]File 2021-08-24 10-02-18.mkv created for client 127.0.0.1
-[-]Error reading the file '2021-08-24 10-02-18.mkv' for client 127.0.0.1
-[+]Stopping Server
-[+]Server started!
-[+]Server socket created successfully.
-[+]Binding successful.
-[+]Server is in LISTENING state.
-[+]New client connection from 127.0.0.1
-[+]File 2021-08-24 10-02-18.mkv created for client 127.0.0.1
-[+]File 2021-08-24 10-02-18.mkv saved successfully for client 127.0.0.1
-[+]Client connection from 127.0.0.1 successfully terminated
-[+]Server started!
-[+]Server socket created successfully.
-[+]Binding successful.
-[+]Server is in LISTENING state.
-[+]New client connection from 127.0.0.1
-[+]File 2021-08-24 10-02-18.mkv saved successfully for client 127.0.0.1
-[+]Client connection from 127.0.0.1 successfully terminated
+Wed Sep 15 02:41:22 2021
+	[+]Server started!
+Wed Sep 15 02:41:22 2021
+	[+]Server socket created successfully.
+Wed Sep 15 02:41:22 2021
+	[+]Binding successful.
+Wed Sep 15 02:41:22 2021
+	[+]Server is in LISTENING state.
+Wed Sep 15 02:41:22 2021
+	[+]New client connection from 127.0.0.1
+Wed Sep 15 02:41:22 2021
+	[+]File propic.jpg saved successfully for client 127.0.0.1
+Wed Sep 15 02:41:22 2021
+	[+]Client connection from 127.0.0.1 successfully terminated
+Wed Sep 15 02:42:43 2021
+	[+]Server started!
+Wed Sep 15 02:42:43 2021
+	[+]Server socket created successfully.
+Wed Sep 15 02:42:43 2021
+	[-]Error in bind
