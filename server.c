@@ -168,6 +168,7 @@ int main(int argc, char **argv)
     if (fp == NULL)
     {
       perror("[-]Error in reading file.");
+      fprintf(log, "[-]Error reading the file \'%s\' for client %s\n", fileName, cli_ip);
       exit(1);
     }
 
@@ -178,23 +179,26 @@ int main(int argc, char **argv)
 
     if (fileSize > maxFileSize)
     {
-      printf("[-]Maximum file size of %d exceeded.\n", maxFileSize);
+      printf("[-]Maximum file size of %d exceeded.\n[-]File not transferred.\n", maxFileSize);
+      fprintf(log, "[-]Maximum file size of %d exceeded from client %s\n", maxFileSize, cli_ip);
       fileSize = -1;
       send(new_sock, &fileSize, sizeof(fileSize), 0);
       printf("[-]Closing the connection.\n");
-      close(new_sock);
-      exit(1);
+      fprintf(log, "[+]Client connection from %s successfully terminated\n", cli_ip);
+      break;
     }
 
     // Sending file Size
     if (send(new_sock, &fileSize, sizeof(fileSize), 0) == -1)
     {
       perror("[-]Error in sending file size.");
+      fprintf(log, "[-]Error in sending file size for client %s\n", cli_ip);
       exit(1);
     }
 
     send_file(fp, new_sock, fileSize);
-    printf("[+]File data sent successfully.\n");
+    printf("[+]File sent successfully.\n");
+    fprintf(log, "[+]File \'%s\' successfully sent t0 client %s\n", fileName, cli_ip);
     }
     else
     {
