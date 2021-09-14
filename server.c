@@ -5,6 +5,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
+#include <unistd.h>
 
 void write_file(int sockfd, int fileSize)
 {
@@ -32,6 +33,19 @@ void write_file(int sockfd, int fileSize)
   return;
 }
 
+void send_file(FILE *fp, int sockfd, int fileSize)
+{
+  int n;
+  char data[4096];
+
+  while (!feof(fp))
+  {
+    fread(data, 1, sizeof(data), fp);
+    write(sockfd, data, sizeof(data));
+    bzero(data, sizeof(data));
+  }
+}
+
 int main(int argc, char **argv)
 {
   char *ip = "127.0.0.1";
@@ -46,6 +60,8 @@ int main(int argc, char **argv)
   int maxFileSize = 104857600; // = 100MB
   const char *cli_ip;
   char cli_ip_dest[4096];
+
+  FILE *fp;
 
   // Setting up logging
   FILE *log;
@@ -148,7 +164,37 @@ int main(int argc, char **argv)
     }
     else if (action == 0)
     {
-      //pull
+      fp = fopen(fileName, "r");
+    if (fp == NULL)
+    {
+      perror("[-]Error in reading file.");
+      exit(1);
+    }
+
+    // Getting file size
+    fseek(fp, 0, SEEK_END);
+    fileSize = ftell(fp);
+    fseek(fp, 0, SEEK_SET);
+
+    if (fileSize > maxFileSize)
+    {
+      printf("[-]Maximum file size of %d exceeded.\n", maxFileSize);
+      fileSize = -1;
+      send(new_sock, &fileSize, sizeof(fileSize), 0);
+      printf("[-]Closing the connection.\n");
+      close(new_sock);
+      exit(1);
+    }
+
+    // Sending file Size
+    if (send(new_sock, &fileSize, sizeof(fileSize), 0) == -1)
+    {
+      perror("[-]Error in sending file size.");
+      exit(1);
+    }
+
+    send_file(fp, new_sock, fileSize);
+    printf("[+]File data sent successfully.\n");
     }
     else
     {
