@@ -1,0 +1,30 @@
+[+]Server started!
+[+]Server socket created successfully.
+[+]Binding successful.
+[+]Server is in LISTENING state.
+[+]New client connection from 127.0.0.1
+[+]File 2021-08-24 10-02-18.mkv created for client 127.0.0.1
+[-]Error reading the file '2021-08-24 10-02-18.mkv' for client 127.0.0.1
+[+]Server started!
+[+]Server socket created successfully.
+[+]Binding successful.
+[+]Server is in LISTENING state.
+[+]New client connection from 127.0.0.1
+[+]File 2021-08-24 10-02-18.mkv created for client 127.0.0.1
+[-]Error reading the file '2021-08-24 10-02-18.mkv' for client 127.0.0.1
+[+]Stopping Server
+[+]Server started!
+[+]Server socket created successfully.
+[+]Binding successful.
+[+]Server is in LISTENING state.
+[+]New client connection from 127.0.0.1
+[+]File 2021-08-24 10-02-18.mkv created for client 127.0.0.1
+[+]File 2021-08-24 10-02-18.mkv saved successfully for client 127.0.0.1
+[+]Client connection from 127.0.0.1 successfully terminated
+[+]Server started!
+[+]Server socket created successfully.
+[+]Binding successful.
+[+]Server is in LISTENING state.
+[+]New client connection from 127.0.0.1
+[+]File 2021-08-24 10-02-18.mkv saved successfully for client 127.0.0.1
+[+]Client connection from 127.0.0.1 successfully terminated

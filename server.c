@@ -134,8 +134,8 @@ int main(int argc, char **argv)
 
     // Read file Name
     read(new_sock, &fileName, sizeof(fileName));
-    printf("[+]File created as \'%s\'\n", fileName);
-    fprintf(log, "[+]File %s created for client %s\n", fileName, cli_ip);
+    //printf("[+]File created as \'%s\'\n", fileName);
+    //fprintf(log, "[+]File %s created for client %s\n", fileName, cli_ip);
 
     // Read action type
     read(new_sock, &action, sizeof(action));
@@ -169,7 +169,7 @@ int main(int argc, char **argv)
     {
       perror("[-]Error in reading file.");
       fprintf(log, "[-]Error reading the file \'%s\' for client %s\n", fileName, cli_ip);
-      exit(1);
+      break;
     }
 
     // Getting file size
@@ -203,6 +203,8 @@ int main(int argc, char **argv)
     else
     {
       // error
+      printf("[-]Invalid argument from client %s.\n", cli_ip);
+      fprintf(log, "[-]Invalid action requested by client %s\n", cli_ip);
     }
   }
   fprintf(log, "[+]Stopping Server\n");
