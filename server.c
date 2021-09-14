@@ -59,7 +59,7 @@ int main(int argc, char **argv)
     exit(1);
   }
   printf("[+]Server socket created successfully.\n");
-  fprintf(log, "[+]Server ocket created successfully.\n");
+  fprintf(log, "[+]Server socket created successfully.\n");
 
   server_addr.sin_family = AF_INET;
   server_addr.sin_port = port;
@@ -72,8 +72,8 @@ int main(int argc, char **argv)
     fprintf(log, "[-]Error in bind\n");
     exit(1);
   }
-  printf("[+]Binding successfull.\n");
-  fprintf(log, "[+]Binding successfull.\n[+]Server is in LISTENING state\n");
+  printf("[+]Binding successful.\n");
+  fprintf(log, "[+]Binding successful.\n[+]Server is in LISTENING state.\n");
 
 for(;;){
 
@@ -120,7 +120,6 @@ for(;;){
 
   // Read fileNameSize
   read(new_sock, &fileNameSize, sizeof(fileNameSize));
-  //printf("%d\n", fileNameSize);
   char *fileName[fileNameSize]; 
   bzero(fileName, sizeof(fileName));
 
@@ -129,14 +128,16 @@ for(;;){
  printf("[+]File created as \'%s\'\n", fileName);
  fprintf(log, "[+]File %s created for client %s\n", fileName, cli_ip);
 
+
+
   write_file(new_sock, fileSize);
   rename("recv.txt", fileName);
   printf("[+]Data written in the file successfully.\n");
   fprintf(log, "[+]File %s saved successfully for client %s\n", fileName, cli_ip);
   printf("[+]Client connection from %s successfully terminated\n", cli_ip );
   fprintf(log, "[+]Client connection from %s successfully terminated\n", cli_ip);
+  fclose(log);
 }
   fprintf(log, "[+]Stopping Server\n");
-  fclose(log);
   return 0;
 }
