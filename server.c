@@ -59,6 +59,7 @@ int main(int argc, char **argv)
   int fileSize;
   int fileNameSize;
   int maxFileSize = 104857600; // = 100MB
+  int minFileSize = 10485760; // = 10MB
   const char *cli_ip;
   char cli_ip_dest[4096];
   time_t systime;
@@ -100,7 +101,7 @@ int main(int argc, char **argv)
   {
     time(&systime);
 
-    if (listen(sockfd, 10) == 0)
+    if (listen(sockfd, 100) == 0)
     {
       printf("[+]Listening....\n");
     }
@@ -180,10 +181,10 @@ int main(int argc, char **argv)
     fileSize = ftell(fp);
     fseek(fp, 0, SEEK_SET);
 
-    if (fileSize > maxFileSize)
+    if (fileSize > maxFileSize || fileSize < minFileSize)
     {
-      printf("[-]Maximum file size of %d exceeded.\n[-]File not transferred.\n", maxFileSize);
-      fprintf(log, "%s\t[-]Maximum file size of %d exceeded from client %s\n", ctime(&systime), maxFileSize, cli_ip);
+      printf("[-]File size out of range.\n[-]File not transferred.\n");
+      fprintf(log, "%s\t[-]File size out of range for client %s\n", ctime(&systime), cli_ip);
       fileSize = -1;
       send(new_sock, &fileSize, sizeof(fileSize), 0);
       printf("[-]Closing the connection.\n");
