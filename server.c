@@ -61,7 +61,6 @@ void handler(int sig)
 
 int main(int argc, char **argv)
 {
-  char *ip = "127.0.0.1";
   int port = 6666;
   int e, pid, action;
 
@@ -97,7 +96,7 @@ int main(int argc, char **argv)
 
   server_addr.sin_family = AF_INET;
   server_addr.sin_port = port;
-  server_addr.sin_addr.s_addr = inet_addr(ip);
+  server_addr.sin_addr.s_addr = htonl(INADDR_ANY);
 
   e = bind(sockfd, (struct sockaddr *)&server_addr, sizeof(server_addr));
   if (e < 0)
@@ -175,8 +174,8 @@ int main(int argc, char **argv)
         read(new_sock, &fileSize, sizeof(fileSize));
         if (fileSize == -1)
         {
-          printf("[-]Maximum file size of %d exceeded.\n[-]File not tranferred.\n", maxFileSize);
-          fprintf(log, "%s\t[-]Maximum file size of %d exceeded from client %s\n", ctime(&systime), maxFileSize, cli_ip);
+          printf("[-]File size out of range from client %s\n", cli_ip);
+          fprintf(log, "%s\t[-]File size out of range from client %s\n", ctime(&systime), cli_ip);
           printf("[+]Client connection from %s successfully terminated\n", cli_ip);
           fprintf(log, "%s\t[+]Client connection from %s successfully terminated\n", ctime(&systime), cli_ip);
           break;
@@ -231,7 +230,7 @@ int main(int argc, char **argv)
       else
       {
         // error
-        printf("[-]Invalid argument from client %s.\n", cli_ip);
+        printf("[-]Invalid argument received from client %s. Please try again\n", cli_ip);
         fprintf(log, "%s\t[-]Invalid action requested by client %s\n", ctime(&systime), cli_ip);
       }
       close(new_sock);
@@ -242,6 +241,5 @@ int main(int argc, char **argv)
   }
   close(sockfd);
   time(&systime);
-  fprintf(log, "%s\t[+]Stopping Server\n", ctime(&systime));
-  return 0;
+  
 }
