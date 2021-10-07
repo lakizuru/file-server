@@ -227,7 +227,7 @@ int main(int argc, char **argv)
         printf("[+]File sent successfully.\n");
         fprintf(log, "%s\t[+]File \'%s\' successfully sent t0 client %s\n", ctime(&systime), fileName, cli_ip);
       }
-      else
+      else if (action == -1)
       {
         // error
         printf("[-]Invalid argument received from client %s. Please try again\n", cli_ip);
