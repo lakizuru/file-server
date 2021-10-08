@@ -54,9 +54,15 @@ int clients = 0;
 void handler(int sig)
 {
   pid_t pid;
+  int stat;
 
-  pid = wait(NULL);
-  clients--;
+  while ((pid = waitpid(-1, &stat, WNOHANG))>0){
+        clients--;
+        printf("[+]Server process %d terminated\n", pid);
+    }
+    return;
+
+  
 }
 
 int main(int argc, char **argv)
