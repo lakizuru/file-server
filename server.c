@@ -12,23 +12,27 @@
 
 void write_file(int sockfd, int fileSize)
 {
-  int n;
+  ssize_t n;
   FILE *fp;
 
   char *filename = "recv";
 
   char buffer[4096];
-  bzero(buffer, sizeof(buffer));
 
   fp = fopen(filename, "w");
+  if (!fp)
+    return;
 
   // Reading byte array
   while (fileSize > 0)
   {
-    read(sockfd, buffer, 4096);
-    fwrite(buffer, 1, sizeof(buffer), fp);
-    fileSize -= 4096;
-    bzero(buffer, sizeof(buffer));
+    if ((n = read(sockfd, buffer, sizeof(buffer))) < 0)
+      break;
+
+    if (n != fwrite(buffer, 1, n, fp))
+      break;
+
+    fileSize -= n;
   }
 
   fclose(fp);
